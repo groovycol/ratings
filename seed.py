@@ -49,7 +49,8 @@ def load_movies():
         row = row.rstrip()
         field_list = row.split("|")
         movie_id = field_list[0]  
-        title = field_list[1]
+        title_long = field_list[1]
+        title = title_long[:-7]
         released_str  = field_list[2]
         imdb_url= field_list[4] 
 
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_users()
+    # load_users()
     load_movies()
-    load_ratings()
+    # load_ratings()
     set_val_user_id()
