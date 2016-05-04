@@ -32,6 +32,7 @@ def user_list():
     """Show list of users."""
 
     users = User.query.all()
+    print session
     return render_template("user_list.html", users=users)
 
 
@@ -66,6 +67,7 @@ def user_add():
         db.session.commit()
 
         flash("User " + email + " is now registered")
+        session['current_user'] = new_user.user_id
 
     return render_template("homepage.html")
 
@@ -81,14 +83,26 @@ def user_validation():
         flash("No cheesecake for you! Looks like you need to register")
         return render_template("register.html")
     elif user.password == password:
+        session['current_user'] = user.user_id
+        print session
         flash("User " + email + " signed in")
         return render_template("homepage.html")
     else:
         flash("Password doesn't match. No cheesecake for you!")
         return render_template("sign_in.html")
         
-
+@app.route('/logout')
+def log_user_out_of_session():
+    """remove user from session"""
     
+    session.clear()
+    print session
+    flash("you have logged out")
+    print session
+
+    return render_template("homepage.html")
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
