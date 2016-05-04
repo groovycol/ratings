@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Welcome </h1>
+
+<form action="/user_validation" method="POST">
+        email
+        <input type="text" name="email"> 
+        <br>
+        password
+        <input type="text" name="password">
+        <br>
+        <input type="submit">        
+    </form>
+
+
+{% endblock %}

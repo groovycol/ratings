@@ -8,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 # from model import connect_to_db, db
 from model import User, Rating, Movie, connect_to_db, db
 
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -24,6 +25,8 @@ def index():
 
     return render_template("homepage.html")
 
+
+
 @app.route("/users")
 def user_list():
     """Show list of users."""
@@ -31,32 +34,55 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
-
 @app.route('/sign_in')
 def sign_in():
-    """Send user to sign in page"""
+    """Take users to page where they have the option to login or register""" 
 
     return render_template("sign_in.html")
 
+
+@app.route('/register', methods=["POST"])
+def register():
+    """Send user to registration page"""
+
+    return render_template("register.html")
+
+@app.route('/user_add', methods=["POST"])
+def user_add():
+    """add new users to dbase"""
+    # ADD a Flask flash message 
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    age = request.form.get("age")
+    zipcode = request.form.get("zipcode")
+
+    if User.query.filter_by(email="email").first() == None:
+        new_user = User(email=email,
+        password=password, age=age, zipcode=zipcode)
+        db.session.add(new_user)
+        db.session.commit()
+
+    # return render_template("welcome.html")
+    return render_template("homepage.html")
+
 @app.route('/user_validation', methods=["POST"])
 def user_validation():
-    """Validate user login, add new users to dbase"""
+    """Validate user login"""
+    # ADD a Flask flash message 
+
     email = request.form.get("email")
     password = request.form.get("password")
 
-    User.query.filter_by(email="email").one()
-    # Find out if they are in the DB with query...
-    #  User.query.filter('email').
-    # if user not in db
-    #     add user to db       
-    # else
-    #     cool
+    user = User.query.filter_by(email=email).first()
+    if user.password == password:
+        return render_template("homepage.html")
+        # flash(you are logged in)
+    else:
+        # flash (No cheesecake for you, username or password do not match)
+        return render_template("sign_in.html")
 
-    # return render_template("welcome.html")
-
-    return render_template("homepage.html")
-
-
+    
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
