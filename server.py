@@ -34,6 +34,7 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+
 @app.route('/sign_in')
 def sign_in():
     """Take users to page where they have the option to login or register""" 
@@ -41,11 +42,12 @@ def sign_in():
     return render_template("sign_in.html")
 
 
-@app.route('/register', methods=["POST"])
+@app.route('/register')
 def register():
     """Send user to registration page"""
 
     return render_template("register.html")
+
 
 @app.route('/user_add', methods=["POST"])
 def user_add():
@@ -63,24 +65,28 @@ def user_add():
         db.session.add(new_user)
         db.session.commit()
 
-    # return render_template("welcome.html")
+        flash("User " + email + " is now registered")
+
     return render_template("homepage.html")
 
 @app.route('/user_validation', methods=["POST"])
 def user_validation():
     """Validate user login"""
-    # ADD a Flask flash message 
 
     email = request.form.get("email")
     password = request.form.get("password")
 
     user = User.query.filter_by(email=email).first()
-    if user.password == password:
+    if user == None:
+        flash("No cheesecake for you! Looks like you need to register")
+        return render_template("register.html")
+    elif user.password == password:
+        flash("User " + email + " signed in")
         return render_template("homepage.html")
-        # flash(you are logged in)
     else:
-        # flash (No cheesecake for you, username or password do not match)
+        flash("Password doesn't match. No cheesecake for you!")
         return render_template("sign_in.html")
+        
 
     
 
