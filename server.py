@@ -35,6 +35,15 @@ def user_list():
     print session
     return render_template("user_list.html", users=users)
 
+@app.route("/movies")
+def movie_list():
+    """Show list of movies."""
+
+    movies = Movie.query.all()
+    print session
+    return render_template("movies.html", movies=movies)
+
+
 
 @app.route('/sign_in')
 def sign_in():
@@ -54,13 +63,12 @@ def register():
 def user_page(user_id):
     """Take user to a page that displays user info"""
 
-    print user_id
     user = User.query.filter_by(user_id=user_id).first()
-    print user
     ratings = Rating.query.filter_by(user_id=user_id).all()
-    movies = Movie.query.all()
-    print ratings
-    return render_template("user_detail.html", user=user, ratings=ratings, movies=movies)
+
+    # raise Exception("let's play")
+
+    return render_template("user_detail.html", user=user, ratings=ratings)
 
 
 @app.route('/user_add', methods=["POST"])
