@@ -39,7 +39,7 @@ def user_list():
 def movie_list():
     """Show list of movies."""
 
-    movies = Movie.query.all()
+    movies = Movie.query.order_by('title').all()
     print session
     return render_template("movies.html", movies=movies)
 
@@ -69,6 +69,37 @@ def user_page(user_id):
     # raise Exception("let's play")
 
     return render_template("user_detail.html", user=user, ratings=ratings)
+
+
+@app.route('/movies/<int:movie_id>')
+def movie_page(movie_id):
+    """Take user to a page that displays movie info"""
+
+    movie = Movie.query.filter_by(movie_id=movie_id).first()
+    session['current_movie'] = movie.movie_id
+    
+    ratings = Rating.query.filter_by(movie_id=movie_id).all()
+
+    # raise Exception("let's play")
+
+    return render_template("movie_detail.html", movie=movie, ratings=ratings)
+
+
+@app.route('/rate', methods=["POST"])
+def rate_movie():
+    """rate movie in db"""
+
+    movie_id = session['current_movie']
+
+    flash("User is logged in")
+    user_id = session['current_user']
+   
+    ratings = request.form.get("rating")
+
+    movie = Movie.query.filter_by(movie_id=movie_id).first()
+    ratings = Rating.query.filter_by(movie_id=movie_id).all()
+    
+    return render_template("movie_detail.html", movie=movie, ratings=ratings)
 
 
 @app.route('/user_add', methods=["POST"])
