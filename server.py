@@ -50,6 +50,19 @@ def register():
     return render_template("register.html")
 
 
+@app.route('/users/<int:user_id>')
+def user_page(user_id):
+    """Take user to a page that displays user info"""
+
+    print user_id
+    user = User.query.filter_by(user_id=user_id).first()
+    print user
+    ratings = Rating.query.filter_by(user_id=user_id).all()
+    movies = Movie.query.all()
+    print ratings
+    return render_template("user_detail.html", user=user, ratings=ratings, movies=movies)
+
+
 @app.route('/user_add', methods=["POST"])
 def user_add():
     """add new users to dbase"""
@@ -62,7 +75,9 @@ def user_add():
 
     if User.query.filter_by(email="email").first() == None:
         new_user = User(email=email,
-        password=password, age=age, zipcode=zipcode)
+                        password=password, 
+                        age=age, 
+                        zipcode=zipcode)
         db.session.add(new_user)
         db.session.commit()
 
@@ -77,8 +92,9 @@ def user_validation():
 
     email = request.form.get("email")
     password = request.form.get("password")
-
+    
     user = User.query.filter_by(email=email).first()
+    
     if user == None:
         flash("No cheesecake for you! Looks like you need to register")
         return render_template("register.html")
@@ -96,9 +112,9 @@ def log_user_out_of_session():
     """remove user from session"""
     
     session.clear()
-    print session
+    # print session
     flash("you have logged out")
-    print session
+    # print session
 
     return render_template("homepage.html")
 
