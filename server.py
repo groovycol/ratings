@@ -94,11 +94,22 @@ def rate_movie():
     flash("User is logged in")
     user_id = session['current_user']
    
-    ratings = request.form.get("rating")
+    score = request.form.get("rating")
+
+    # if Rating.query.filter_by(movie_id="movie_id", user_id="user_id") == None:
+    new_rating = Rating(movie_id=movie_id,
+                        user_id=user_id,
+                        score=score)
+
+    print "got here!"
+    db.session.add(new_rating)
+    db.session.commit()
+
+    flash("database updated")
 
     movie = Movie.query.filter_by(movie_id=movie_id).first()
     ratings = Rating.query.filter_by(movie_id=movie_id).all()
-    
+
     return render_template("movie_detail.html", movie=movie, ratings=ratings)
 
 

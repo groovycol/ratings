@@ -59,6 +59,7 @@ class Rating(db.Model):
                            backref=db.backref("ratings", order_by=rating_id))
 
     # Define relationship to movie
+    # by what name will you be able to navigate that relationship
     movie = db.relationship("Movie",
                             backref=db.backref("ratings", order_by=rating_id))
 
