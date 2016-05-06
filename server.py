@@ -95,17 +95,22 @@ def rate_movie():
     user_id = session['current_user']
    
     score = request.form.get("rating")
+    
+    # raise Exception("let's play")
 
-    # if Rating.query.filter_by(movie_id="movie_id", user_id="user_id") == None:
-    new_rating = Rating(movie_id=movie_id,
-                        user_id=user_id,
-                        score=score)
+    if Rating.query.filter_by(movie_id=movie_id, user_id=user_id).first() == None:
+        # raise Exception("let's play")
+        new_rating = Rating(movie_id=movie_id,
+                            user_id=user_id,
+                            score=score)
+        db.session.add(new_rating)
+        db.session.commit()
+        flash("database updated")
+    # else:
+    #     use db.session to update dbase
 
     print "got here!"
-    db.session.add(new_rating)
-    db.session.commit()
-
-    flash("database updated")
+    
 
     movie = Movie.query.filter_by(movie_id=movie_id).first()
     ratings = Rating.query.filter_by(movie_id=movie_id).all()
@@ -123,7 +128,7 @@ def user_add():
     age = request.form.get("age")
     zipcode = request.form.get("zipcode")
 
-    if User.query.filter_by(email="email").first() == None:
+    if User.query.filter_by(email=email).first() == None:
         new_user = User(email=email,
                         password=password, 
                         age=age, 
